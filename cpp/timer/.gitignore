@@ -1,9 +1,0 @@
-#-----------some ignore folder used with neovim, vscode, cland
-build
-install
-.cache
-.vscode
-.local_history
-.DS_Store
-compile_commands.json
-#-----------end-------------------------------------------------
