@@ -7,3 +7,5 @@ compile_commands.json
 .local_history
 .DS_Store
 #-----------end-------------------------------------------------
+pyp/__pycache__
+pyp.egg-info
