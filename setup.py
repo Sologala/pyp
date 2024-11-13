@@ -5,7 +5,9 @@ setup(
     version='0.0.1',
     install_requires=[
         'numpy',
-        'ffmpeg-python',
+        'fire',
+        "imageio",
+        "pillow",
         'importlib-metadata; python_version<"3.10"',
     ],
     packages=find_packages(
