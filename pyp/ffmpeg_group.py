@@ -6,7 +6,7 @@ import re
 
 
 def extract_labels_from_filename(filename):
-    pattern = re.compile(r'[(](.*)[)]', re.S)  # 贪婪匹配
+    pattern = re.compile(r"[(](.*)[)]", re.S)  # 贪婪匹配
     labels = re.findall(pattern, filename)
     print(labels)
     return labels[0] if len(labels) else filename
@@ -16,19 +16,37 @@ def overlay_text_and_compress(input_path, output_path, text):
     # First overlay text
     tmp_output_path = "/tmp/tmp_overlay.mp4"
     overlay_cmd = [
-        'ffmpeg', '-y', '-i', input_path,
-        '-vf', f"drawtext=text='{text}':fontcolor=white:fontsize=24:x=10:y=10",
-        '-c:a', 'copy', tmp_output_path
+        "ffmpeg",
+        "-y",
+        "-i",
+        input_path,
+        "-vf",
+        f"drawtext=text='{text}':fontcolor=white:fontsize=24:x=10:y=10",
+        "-c:a",
+        "copy",
+        tmp_output_path,
     ]
     subprocess.run(overlay_cmd, check=True, stdout=None)
 
     # Then compress
     compress_cmd = [
-        'ffmpeg', '-y', '-i', tmp_output_path,
-        '-b:v', '800k', '-b:a', '128k',
-        '-c:v', 'libx264', '-preset', 'medium',
-        '-c:a', 'aac', '-strict', 'experimental',
-        output_path
+        "ffmpeg",
+        "-y",
+        "-i",
+        tmp_output_path,
+        "-b:v",
+        "800k",
+        "-b:a",
+        "128k",
+        "-c:v",
+        "libx264",
+        "-preset",
+        "medium",
+        "-c:a",
+        "aac",
+        "-strict",
+        "experimental",
+        output_path,
     ]
     subprocess.run(compress_cmd, check=True, stdout=None)
     os.remove(tmp_output_path)  # clean up
@@ -43,7 +61,7 @@ def hconcat(*inpvideos, output):
         output_files.append(tmp_output_path)
 
     # Create video inputs for ffmpeg concat filter
-    input_files_str = ' '.join([f"-i {file}" for file in output_files])
+    input_files_str = " ".join([f"-i {file}" for file in output_files])
 
     # Generate hstack filter string
     hstack_filter = f"hstack=inputs={len(output_files)}"
@@ -51,7 +69,7 @@ def hconcat(*inpvideos, output):
     # Final combined file output path
 
     # Concatenate video using hstack
-    ffmpeg_concat_command = f"ffmpeg -y {input_files_str} -filter_complex \"{hstack_filter}\" -c:a copy {output}"
+    ffmpeg_concat_command = f'ffmpeg -y {input_files_str} -filter_complex "{hstack_filter}" -c:a copy {output}'
     subprocess.run(ffmpeg_concat_command, shell=True, check=True)
 
 
@@ -64,7 +82,7 @@ def vconcat(*inpvideos, output):
         output_files.append(tmp_output_path)
 
     # Create video inputs for ffmpeg concat filter
-    input_files_str = ' '.join([f"-i {file}" for file in output_files])
+    input_files_str = " ".join([f"-i {file}" for file in output_files])
 
     # Generate vstack filter string
     hstack_filter = f"vstack=inputs={len(output_files)}"
@@ -72,7 +90,7 @@ def vconcat(*inpvideos, output):
     # Final combined file output path
 
     # Concatenate video using hstack
-    ffmpeg_concat_command = f"ffmpeg -y {input_files_str} -filter_complex \"{hstack_filter}\" -c:a copy {output}"
+    ffmpeg_concat_command = f'ffmpeg -y {input_files_str} -filter_complex "{hstack_filter}" -c:a copy {output}'
     subprocess.run(ffmpeg_concat_command, shell=True, check=True)
 
 
@@ -101,8 +119,9 @@ def imgs2gif(*imgs, output):
         while os.path.getsize(output_path) > max_file_size:
             # Reduce quality by resizing or decreasing duration
             reduction_factor = 0.9
-            frames = resize_images(frames, int(
-                frames[0].width * reduction_factor), int(frames[0].height * reduction_factor))
+            frames = resize_images(
+                frames, int(frames[0].width * reduction_factor), int(frames[0].height * reduction_factor)
+            )
             save_gif(frames, output_path, duration=0.1)
 
     # Replace with your image paths
@@ -112,7 +131,7 @@ def imgs2gif(*imgs, output):
     images = resize_images(images, 800, 800)  # Max width & height
 
     # Save initial GIF
-    temp_path = 'temp.gif'
+    temp_path = "temp.gif"
     save_gif(images, temp_path)
 
     # Compress GIF to ensure it doesn't exceed 10MB
@@ -124,8 +143,16 @@ def imgs2gif(*imgs, output):
         os.remove(temp_path)
 
 
+def fix(video_in, video_out=""):
+    print(f"input video path is {video_in}")
+    video_out = video_out if len(video_out) else "output.mp4"
+    cmd = f"ffmpeg -i {video_in} -c:v libx264 -c:a aac -strict experimental {video_out}"
+    subprocess.run(cmd, check=True, stdout=None)
+
+
 app = {
     "hconcat": hconcat,
     "vconcat": vconcat,
     "imgs2gif": imgs2gif,
+    "fix": fix,
 }
