@@ -1,4 +1,5 @@
 #-----------some ignore folder used with neovim, vscode, cland
+dist
 build
 compile_commands.json
 .pytest_cache
