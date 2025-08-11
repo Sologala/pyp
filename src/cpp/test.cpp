@@ -1,7 +1,7 @@
 
 #include <pybind11/pybind11.h>
+#include "dynamic_lib.h"
 
-int add(int i, int j) { return i + j; }
 
 namespace py = pybind11;
 
@@ -16,7 +16,7 @@ PYBIND11_MODULE(_core, m) {
          subtract
   )pbdoc";
 
-  m.def("add", &add, R"pbdoc(
+  m.def("add", &func, R"pbdoc(
       Add two numbers
       Some other explanation about the add function.
   )pbdoc");

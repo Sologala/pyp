@@ -8,5 +8,6 @@ compile_commands.json
 .local_history
 .DS_Store
 #-----------end-------------------------------------------------
-pyp/__pycache__
+__pycache__
 pyp.egg-info
+*.egg-info
